@@ -81,7 +81,11 @@ public class Shape {
         return new Shape(this.name, clonedCoordinates);
     }
 
-    private List<Shape> generateAllVariants() {
+    public String getName() {
+        return name;
+    }
+
+    public List<Shape> generateAllVariants() {
         List<Shape> variants = new ArrayList<>();
         variants.add(this.clone());
 
