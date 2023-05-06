@@ -1,16 +1,21 @@
 package com.hyperpunks.tetristilerbackend.library;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Grid {
-    private String[][] grid;
+    private final String[][] grid; // y, x
+
+    private final EmptyGrouper emptyGrouper;
+
 
     public Grid(int gridSizeX, int gridSizeY) {
         grid = new String[gridSizeX][gridSizeY];
         for (String[] row : grid) {
             Arrays.fill(row, "E");
         }
+        emptyGrouper = new EmptyGrouper(gridSizeX, gridSizeY);
     }
 
     public Grid(String stringedGrid) {
@@ -19,10 +24,12 @@ public class Grid {
         for (int y = 0; y < grid.length; y++) {
             grid[y] = rows[grid.length - y - 1].split("");
         }
+        emptyGrouper = new EmptyGrouper(grid);
     }
 
     private Grid(String[][] grid) {
         this.grid = grid;
+        emptyGrouper = new EmptyGrouper(grid);
     }
 
     public static Grid withBlacks(int gridSizeX, int gridSizeY, List<int[]> blackCoordinates) {
@@ -52,6 +59,15 @@ public class Grid {
         return result.toString();
     }
 
+    public String toDisplayString() {
+        StringBuilder result = new StringBuilder();
+        for (int y = grid.length - 1; y >= 0; y--) {
+            result.append(String.join("", grid[y]));
+            result.append("\n");
+        }
+        return result.toString();
+    }
+
     public int getSizeX() {
         return grid.length;
     }
@@ -62,6 +78,11 @@ public class Grid {
 
     public void set(int x, int y, String value) {
         grid[y][x] = value;
+        if (value.equals("E")) {
+            emptyGrouper.emptyTiles(List.of(new int[]{x, y}));
+        } else {
+            emptyGrouper.fillTiles(List.of(new int[]{x, y}));
+        }
     }
 
     public boolean canFit(int positionX, int positionY, Shape shape) {
@@ -82,15 +103,52 @@ public class Grid {
         return true;
     }
 
-    public boolean place(int positionX, int positionY, Shape shape) {
+    public boolean canFitAndTouch(int positionX, int positionY, Shape shape) {
         if (!canFit(positionX, positionY, shape)) {
             return false;
         }
         for (int[] shapeCoordinate : shape.getLocalCoordinates()) {
             int x = shapeCoordinate[0] + positionX;
             int y = shapeCoordinate[1] + positionY;
-            grid[y][x] = shape.getName();
+            for (int[] neighbourCoordinate : neighbouringCoordinates(x, y)) {
+                String neighbourTile = grid[neighbourCoordinate[1]][neighbourCoordinate[0]];
+                if (!neighbourTile.equals("E") && !neighbourTile.equals("B")) {
+                    return true;
+                }
+            }
         }
+        return false;
+    }
+
+    public List<int[]> neighbouringCoordinates(int positionX, int positionY) {
+        List<int[]> neighbours = new ArrayList<>(4);
+        if (positionX > 0) {
+            neighbours.add(new int[]{positionX - 1, positionY});
+        }
+        if (positionX < grid[0].length - 1) {
+            neighbours.add(new int[]{positionX + 1, positionY});
+        }
+        if (positionY > 0) {
+            neighbours.add(new int[]{positionX, positionY - 1});
+        }
+        if (positionY < grid.length - 1) {
+            neighbours.add(new int[]{positionX, positionY + 1});
+        }
+        return neighbours;
+    }
+
+    public boolean place(int positionX, int positionY, Shape shape) {
+        if (!canFit(positionX, positionY, shape)) {
+            return false;
+        }
+        List<int[]> updatedCoordinates = new ArrayList<>(5);
+        for (int[] shapeCoordinate : shape.getLocalCoordinates()) {
+            int x = shapeCoordinate[0] + positionX;
+            int y = shapeCoordinate[1] + positionY;
+            grid[y][x] = shape.getName();
+            updatedCoordinates.add(new int[]{x, y});
+        }
+        emptyGrouper.fillTiles(updatedCoordinates);
         return true;
     }
 
@@ -117,6 +175,53 @@ public class Grid {
         }
         return count;
     }
+
+    public List<int[]> findAllPlacements(Shape shape) {
+        List<int[]> placements = new ArrayList<>();
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid[y].length; x++) {
+                if (canFit(x, y, shape)) {
+                    placements.add(new int[]{x, y});
+                }
+            }
+        }
+        return placements;
+    }
+
+    public List<int[]> findAllTouchingPlacements(Shape shape) {
+        List<int[]> placements = new ArrayList<>();
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid[y].length; x++) {
+                if (canFitAndTouch(x, y, shape)) {
+                    placements.add(new int[]{x, y});
+                }
+            }
+        }
+        return placements;
+    }
+
+    public boolean placeBottomLeftmost(Shape shape) {
+        List<int[]> availablePlacements = findAllPlacements(shape);
+        if (availablePlacements.size() == 0) {
+            return false;
+        }
+        int[] firstPosition = availablePlacements.get(0);
+        return place(firstPosition[0], firstPosition[1], shape);
+    }
+
+    public boolean placeTouching(Shape shape) {
+        List<int[]> availablePlacements = findAllTouchingPlacements(shape);
+        if (availablePlacements.size() == 0) {
+            return false;
+        }
+        int[] firstPosition = availablePlacements.get(0);
+        return place(firstPosition[0], firstPosition[1], shape);
+    }
+
+    public String getEmptiness() {
+        return emptyGrouper.getAllGroupSizes().toString();
+    }
+
 
     public int calculatePerimeter() {
         int count = 0;
