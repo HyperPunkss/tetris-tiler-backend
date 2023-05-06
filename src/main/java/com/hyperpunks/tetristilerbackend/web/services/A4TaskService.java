@@ -85,7 +85,7 @@ public class A4TaskService {
                     if (grid.canFit(x, y, variant)) {
                         Grid clonedGrid = grid.clone();
                         clonedGrid.place(x, y, variant);
-                        results.add(grid.toString());
+                        results.add(clonedGrid.toString());
                     }
                 }
             }
