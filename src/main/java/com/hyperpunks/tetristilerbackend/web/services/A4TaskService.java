@@ -17,25 +17,29 @@ import java.util.List;
 @Service
 public class A4TaskService {
 
-    public  static class RequestForm {
+    public static class RequestForm {
         public int gridSizeX;
         public int gridSizeY;
         public List<int[]> blackHoles;
         public String letter;
+        public boolean allowRotations;
+        public boolean allowFlip;
 
         public RequestForm() {
         }
 
-        public RequestForm(int gridSizeX, int gridSizeY, List<int[]> blackHoles, String letter) {
+        public RequestForm(int gridSizeX, int gridSizeY, List<int[]> blackHoles, String letter, boolean allowRotations, boolean allowFlip) {
             this.gridSizeX = gridSizeX;
             this.gridSizeY = gridSizeY;
             this.blackHoles = blackHoles;
             this.letter = letter;
+            this.allowRotations = allowRotations;
+            this.allowFlip = allowFlip;
         }
     }
 
 
-    private RequestForm deserializeRequestJSON(String requestJSON) throws JSONException{
+    private RequestForm deserializeRequestJSON(String requestJSON) throws JSONException {
         ObjectMapper mapper = new ObjectMapper();
         RequestForm requestForm;
         try {
@@ -68,8 +72,6 @@ public class A4TaskService {
 //    }
 
 
-
-
     public ResponseEntity<Object> getPositions(String requestJSON) {
         RequestForm requestForm;
         try {
@@ -77,13 +79,13 @@ public class A4TaskService {
         } catch (JSONException e) {
             return ResponseEntity.badRequest().body("JSON is invalid, error: " + e);
         }
-        if (requestForm==null){
+        if (requestForm == null) {
             return ResponseEntity.badRequest().body("Could not deserialize the JSON");
         }
         int gridSizeX = requestForm.gridSizeX;
         int gridSizeY = requestForm.gridSizeY;
         if (gridSizeX <= 0 || gridSizeY <= 0) {
-            return ResponseEntity.badRequest().body("Invalid grid size parameters "+gridSizeY +", "+gridSizeY);
+            return ResponseEntity.badRequest().body("Invalid grid size parameters " + gridSizeY + ", " + gridSizeY);
         }
         if (requestForm.letter.length() != 1) {
             return ResponseEntity.badRequest().body("Invalid letter parameter");
@@ -94,7 +96,7 @@ public class A4TaskService {
             }
         }
 
-        List<Shape> variants = Shape.fromString(requestForm.letter).generateAllVariants();
+        List<Shape> variants = Shape.fromString(requestForm.letter).generateAllVariants(requestForm.allowRotations, requestForm.allowFlip);
         Grid grid = Grid.withBlacks(gridSizeX, gridSizeY, requestForm.blackHoles);
         List<String> results = new ArrayList<>();
         for (int y = 0; y < gridSizeY; y++) {
