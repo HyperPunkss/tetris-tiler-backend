@@ -231,6 +231,14 @@ public class Shape {
         return result;
     }
 
+    public static List<Shape> generateAllShapesAndVariants() {
+        List<Shape> result = new ArrayList<>();
+        for (Shape shape : getAllShapes()) {
+            result.addAll(shape.generateAllVariants());
+        }
+        return result;
+    }
+
     public static String getAllShapeVariantsString() {
         StringBuilder result = new StringBuilder();
         for (Shape shape : getAllShapes()) {

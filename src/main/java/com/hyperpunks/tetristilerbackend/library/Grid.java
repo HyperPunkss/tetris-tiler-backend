@@ -52,6 +52,14 @@ public class Grid {
         return result.toString();
     }
 
+    public int getSizeX() {
+        return grid.length;
+    }
+
+    public int getSizeY() {
+        return grid[0].length;
+    }
+
     public void set(int x, int y, String value) {
         grid[y][x] = value;
     }
