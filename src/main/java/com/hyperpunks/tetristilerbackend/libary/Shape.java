@@ -12,7 +12,7 @@ public class Shape {
         this.name = name;
         this.localCoordinates = Arrays.stream(localCoordinates).sorted((a, b) -> {
             if (a[1] != b[1]) {
-                return Integer.compare(a[1], b[1]);
+                return -Integer.compare(a[1], b[1]); // Negative so it goes from top to bottom
             } else {
                 return Integer.compare(a[0], b[0]);
             }
