@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -26,6 +27,7 @@ public class A2TaskService {
     }
 
     public ResponseEntity<Object> getAllShapes(){
+        long startTime = System.currentTimeMillis();
         int gridSizeX = 5;
         int gridSizeY = 5;
         int centerX = gridSizeX / 2;
@@ -40,7 +42,11 @@ public class A2TaskService {
             }
             items.add(new ResponseItem(shape.getName(),grid.toString()));
         }
-        return  ResponseEntity.ok(items);
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        List<Object> itemsWithExecutionTime = new ArrayList<>(items);
+        itemsWithExecutionTime.add(String.valueOf(executionTime));
+        return  ResponseEntity.ok(itemsWithExecutionTime);
     }
 
 }

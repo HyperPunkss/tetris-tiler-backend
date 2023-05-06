@@ -35,6 +35,7 @@ public class A3TaskService {
         }
 
         List<VariationResult> variations = new ArrayList<>();
+        long startTime = System.currentTimeMillis();
         int i = 1;
         for (Shape variant : shape.generateAllVariants()) {
             Grid grid = new Grid(gridSizeX, gridSizeY);
@@ -45,6 +46,10 @@ public class A3TaskService {
             variations.add(new VariationResult(variant.getName() + i, grid.toString()));
             i++;
         }
-        return ResponseEntity.ok(variations);
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        List<Object> variationsWithExecutionTime = new ArrayList<>(variations);
+        variationsWithExecutionTime.add(String.valueOf(executionTime));
+        return ResponseEntity.ok(variationsWithExecutionTime);
     }
 }

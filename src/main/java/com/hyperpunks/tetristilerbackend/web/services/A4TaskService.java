@@ -53,6 +53,7 @@ public class A4TaskService {
     }
 
     public ResponseEntity<Object> getPositions(String requestJSON) {
+        long startTime = System.currentTimeMillis();
         RequestForm requestForm;
         try {
             requestForm = deserializeRequestJSON(requestJSON);
@@ -90,6 +91,10 @@ public class A4TaskService {
                 }
             }
         }
-        return ResponseEntity.ok(results);
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        List<String> resultsWithExecutionTime = new ArrayList<>(results);
+        resultsWithExecutionTime.add(String.valueOf(executionTime));
+        return ResponseEntity.ok(resultsWithExecutionTime);
     }
 }

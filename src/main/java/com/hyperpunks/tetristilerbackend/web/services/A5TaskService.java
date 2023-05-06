@@ -8,8 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class A5TaskService {
@@ -33,6 +32,7 @@ public class A5TaskService {
     }
 
     public ResponseEntity<Object> getRandomFilledUnfilled(String requestJSON) {
+        long startTime = System.currentTimeMillis();
         RequestForm requestForm;
         try {
             requestForm = deserializeRequestJSON(requestJSON);
@@ -52,9 +52,14 @@ public class A5TaskService {
                 responseForm.grid = grid.toString();
                 responseForm.filled = grid.countFilled();
                 responseForm.unfilled = grid.countUnfilled();
-                return ResponseEntity.ok(responseForm);
+                long endTime = System.currentTimeMillis();
+                long executionTime = endTime - startTime;
+                List<Object> responseFormWithExecutionTime = new ArrayList<>(Collections.singleton(responseForm));
+                responseFormWithExecutionTime.add(String.valueOf(executionTime));
+                return ResponseEntity.ok(responseFormWithExecutionTime);
             }
         }
+
         return ResponseEntity.internalServerError().body("Failed to place random shapes");
     }
 }
