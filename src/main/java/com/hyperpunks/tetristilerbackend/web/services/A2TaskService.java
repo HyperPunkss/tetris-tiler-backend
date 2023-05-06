@@ -38,7 +38,7 @@ public class A2TaskService {
             if (!placed) {
                 return ResponseEntity.internalServerError().body("Failed to place " + shape.getName() + " on the " + gridSizeX + "x" + gridSizeY + " grid");
             }
-            items.add(new ResponseItem(shape.getName(),shape.toGridString()));
+            items.add(new ResponseItem(shape.getName(),grid.toString()));
         }
         return  ResponseEntity.ok(items);
     }
