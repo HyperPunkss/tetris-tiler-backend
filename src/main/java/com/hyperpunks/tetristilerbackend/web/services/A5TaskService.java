@@ -43,7 +43,7 @@ public class A5TaskService {
 
         Random random = new Random();
         List<Shape> allShapesAndVariants = Shape.generateAllShapesAndVariants();
-        for (int attempt = 0; attempt < 1000; attempt++) {
+        for (int attempt = 0; attempt < 4096; attempt++) {
             Shape randomShape = allShapesAndVariants.get(random.nextInt(allShapesAndVariants.size()));
             int randomX = random.nextInt(grid.getSizeX());
             int randomY = random.nextInt(grid.getSizeY());
