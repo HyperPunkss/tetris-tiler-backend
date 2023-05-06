@@ -152,8 +152,8 @@ public class Shape {
 
     public String toString() {
         int[][] coordinates = this.localCoordinates;
-        int minY = Arrays.stream(coordinates).mapToInt(x -> x[1]).min().getAsInt();
-        int maxY = Arrays.stream(coordinates).mapToInt(x -> x[1]).max().getAsInt();
+        int minY = Arrays.stream(coordinates).mapToInt(pair -> pair[1]).min().getAsInt();
+        int maxY = Arrays.stream(coordinates).mapToInt(pair -> pair[1]).max().getAsInt();
         StringBuilder lines = new StringBuilder();
         for (int y = maxY; y >= minY; y--) {
             StringBuilder line = new StringBuilder("         ");
