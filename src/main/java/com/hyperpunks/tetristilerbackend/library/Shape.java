@@ -90,41 +90,53 @@ public class Shape {
     }
 
     public List<Shape> generateAllVariants() {
+        return generateAllVariants(true, true);
+    }
+
+    public List<Shape> generateAllVariants(boolean rotate, boolean flip) {
         List<Shape> variants = new ArrayList<>();
         variants.add(this.clone());
 
-        // All rotations by 90 degrees
-        Shape rotated = this.clone();
-        for (int rotation = 0; rotation < 3; rotation++) {
-            rotated.rotate90();
-            if (!rotated.canBeFoundIn(variants)) {
-                variants.add(rotated.clone());
+        if (rotate) {
+            // All rotations by 90 degrees
+            Shape rotated = this.clone();
+            for (int rotation = 0; rotation < 3; rotation++) {
+                rotated.rotate90();
+                if (!rotated.canBeFoundIn(variants)) {
+                    variants.add(rotated.clone());
+                }
             }
         }
 
-        // Flip horizontally
-        Shape flippedHorizontally = this.clone().flipHorizontally();
-        if (!flippedHorizontally.canBeFoundIn(variants)) {
-            variants.add(flippedHorizontally.clone());
-        }
-        // All rotations of flipped
-        for (int rotation = 0; rotation < 3; rotation++) {
-            flippedHorizontally.rotate90();
+        if (flip) {
+            // Flip horizontally
+            Shape flippedHorizontally = this.clone().flipHorizontally();
             if (!flippedHorizontally.canBeFoundIn(variants)) {
                 variants.add(flippedHorizontally.clone());
             }
-        }
+            if (rotate) {
+                // All rotations of flipped
+                for (int rotation = 0; rotation < 3; rotation++) {
+                    flippedHorizontally.rotate90();
+                    if (!flippedHorizontally.canBeFoundIn(variants)) {
+                        variants.add(flippedHorizontally.clone());
+                    }
+                }
+            }
 
-        // Flip vertically
-        Shape flippedVertically = this.clone().flipVertically();
-        if (!flippedVertically.canBeFoundIn(variants)) {
-            variants.add(flippedVertically.clone());
-        }
-        // All rotations of flipped
-        for (int rotation = 0; rotation < 3; rotation++) {
-            flippedVertically.rotate90();
+            // Flip vertically
+            Shape flippedVertically = this.clone().flipVertically();
             if (!flippedVertically.canBeFoundIn(variants)) {
-                variants.add(flippedVertically);
+                variants.add(flippedVertically.clone());
+            }
+            if (rotate) {
+                // All rotations of flipped
+                for (int rotation = 0; rotation < 3; rotation++) {
+                    flippedVertically.rotate90();
+                    if (!flippedVertically.canBeFoundIn(variants)) {
+                        variants.add(flippedVertically);
+                    }
+                }
             }
         }
 
