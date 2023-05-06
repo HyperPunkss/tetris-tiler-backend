@@ -32,14 +32,14 @@ public class Grid {
     }
 
     public void set(int x, int y, String value) {
-        grid[x][y] = value;
+        grid[y][x] = value;
     }
 
     public boolean canFit(int positionX, int positionY, Shape shape) {
         for (int[] shapeCoordinate : shape.getLocalCoordinates()) {
             int x = shapeCoordinate[0] + positionX;
             int y = shapeCoordinate[1] + positionY;
-            String tile = grid[x][y];
+            String tile = grid[y][x];
             if (!tile.equals("E")) {
                 return false;
             }
@@ -54,7 +54,7 @@ public class Grid {
         for (int[] shapeCoordinate : shape.getLocalCoordinates()) {
             int x = shapeCoordinate[0] + positionX;
             int y = shapeCoordinate[1] + positionY;
-            grid[x][y] = shape.getName();
+            grid[y][x] = shape.getName();
         }
         return true;
     }
