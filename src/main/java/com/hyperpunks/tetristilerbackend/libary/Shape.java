@@ -9,10 +9,10 @@ public class Shape {
 
     Shape(int[][] localCoordinates) {
         this.localCoordinates = Arrays.stream(localCoordinates).sorted((a, b) -> {
-            if (a[0] != b[0]) {
-                return Integer.compare(a[0], b[0]);
-            } else {
+            if (a[1] != b[1]) {
                 return Integer.compare(a[1], b[1]);
+            } else {
+                return Integer.compare(a[0], b[0]);
             }
         }).toArray(int[][]::new);
     }
