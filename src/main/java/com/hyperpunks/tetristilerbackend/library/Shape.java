@@ -85,6 +85,10 @@ public class Shape {
         return name;
     }
 
+    public int[][] getLocalCoordinates() {
+        return localCoordinates;
+    }
+
     public List<Shape> generateAllVariants() {
         List<Shape> variants = new ArrayList<>();
         variants.add(this.clone());
