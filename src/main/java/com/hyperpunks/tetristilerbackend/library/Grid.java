@@ -21,12 +21,25 @@ public class Grid {
         }
     }
 
+    private Grid(String[][] grid) {
+        this.grid = grid;
+    }
+
     public static Grid withBlacks(int gridSizeX, int gridSizeY, List<int[]> blackCoordinates) {
         Grid grid = new Grid(gridSizeX, gridSizeY);
         for (int[] blackCoordinate : blackCoordinates) {
             grid.set(blackCoordinate[0], blackCoordinate[1], "B");
         }
         return grid;
+    }
+
+    @Override
+    public Grid clone() {
+        String[][] clonedGrid = new String[this.grid.length][];
+        for (int i = 0; i < this.grid.length; i++) {
+            clonedGrid[i] = this.grid[i].clone();
+        }
+        return new Grid(clonedGrid);
     }
 
     public String toString() {
