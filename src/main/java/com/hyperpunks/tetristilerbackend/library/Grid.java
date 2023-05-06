@@ -13,6 +13,14 @@ public class Grid {
         }
     }
 
+    public Grid(String stringedGrid) {
+        String[] rows = stringedGrid.split(" ");
+        grid = new String[rows.length][rows[0].length()];
+        for (int y = 0; y < grid.length; y++) {
+            grid[y] = rows[grid.length - y - 1].split("");
+        }
+    }
+
     public static Grid withBlacks(int gridSizeX, int gridSizeY, List<int[]> blackCoordinates) {
         Grid grid = new Grid(gridSizeX, gridSizeY);
         for (int[] blackCoordinate : blackCoordinates) {
