@@ -14,16 +14,19 @@ public class A8TaskService {
     class ResponseItem{
         public String grid;
         public int perimeter;
+        public long timer;
 
-        public ResponseItem(String grid, int perimeter) {
+        public ResponseItem(String grid, int perimeter,long timer) {
             this.grid=grid;
             this.perimeter = perimeter;
+            this.timer=timer;
         }
     }
 
 
 
     public ResponseEntity<Object> getPerimeter(){
+        long startTime = System.currentTimeMillis();
         Shape shapeOne = Shape.fromString("F");
         Shape shapeTwo = Shape.fromString("U");
         int gridSizeX = 5;
@@ -36,7 +39,9 @@ public class A8TaskService {
         }
         List<ResponseItem> items = new ArrayList<>();
         int perimeter = grid.calculatePerimeter();
-        items.add(new ResponseItem(grid.toString(),perimeter));
+        long endTime = System.currentTimeMillis();
+        long executionTime = endTime - startTime;
+        items.add(new ResponseItem(grid.toString(),perimeter,executionTime));
         return ResponseEntity.ok(items);
     }
 
