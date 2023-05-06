@@ -1,15 +1,11 @@
 package com.hyperpunks.tetristilerbackend.web.services;
 
 import com.hyperpunks.tetristilerbackend.libary.Shape;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 @Service
 public class A3TaskService {
