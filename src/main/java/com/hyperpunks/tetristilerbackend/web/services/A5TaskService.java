@@ -29,6 +29,7 @@ public class A5TaskService {
         public String grid;
         public int filled;
         public int unfilled;
+        public long timeTaken;
     }
 
     public ResponseEntity<Object> getRandomFilledUnfilled(String requestJSON) {
@@ -54,9 +55,8 @@ public class A5TaskService {
                 responseForm.unfilled = grid.countUnfilled();
                 long endTime = System.currentTimeMillis();
                 long executionTime = endTime - startTime;
-                List<Object> responseFormWithExecutionTime = new ArrayList<>(Collections.singleton(responseForm));
-                responseFormWithExecutionTime.add(String.valueOf(executionTime));
-                return ResponseEntity.ok(responseFormWithExecutionTime);
+                responseForm.timeTaken=executionTime;
+                return ResponseEntity.ok(responseForm);
             }
         }
 
