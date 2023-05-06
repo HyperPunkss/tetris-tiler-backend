@@ -17,7 +17,7 @@ public class A4TaskController {
         this.a4TaskService=a4TaskService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @PostMapping("")
     public ResponseEntity<Object> listAllowedPositions(@RequestBody String requestJSON){
         return a4TaskService.getPositions(requestJSON);
     }
