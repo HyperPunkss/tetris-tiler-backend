@@ -17,7 +17,7 @@ public class Shape {
         }).toArray(int[][]::new);
     }
 
-    public static final Character[] allShapeLetters = {'F', 'I', 'L', 'N', 'P', 'T'};
+    public static final Character[] allShapeLetters = {'F', 'I', 'L', 'N', 'P', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
     public static Shape fromString(String name) {
         name = name.trim().toUpperCase();
@@ -31,6 +31,12 @@ public class Shape {
             case 'N' -> new Shape(new int[][]{{0, 0}, {0, 1}, {0, 2}, {-1, 0}, {-1, -1}});
             case 'P' -> new Shape(new int[][]{{0, 0}, {0, 1}, {1, 1}, {1, 0}, {0, -1}});
             case 'T' -> new Shape(new int[][]{{0, 0}, {1, 0}, {-1, 0}, {0, -1}, {0, -2}});
+            case 'U' -> new Shape(new int[][]{{0, 0}, {-1, 0}, {-1, 1}, {1, 0}, {1, 1}});
+            case 'V' -> new Shape(new int[][]{{0, 0}, {-1, 0}, {-2, 0}, {0, 1}, {0, 2}});
+            case 'W' -> new Shape(new int[][]{{0, 0}, {-1, 0}, {-1, 1}, {0, -1}, {1, -1}});
+            case 'X' -> new Shape(new int[][]{{0, 0}, {-1, 0}, {0, 1}, {1, 0}, {0, -1}});
+            case 'Y' -> new Shape(new int[][]{{0, 0}, {-1, 0}, {0, 1}, {0, -1}, {0, -2}});
+            case 'Z' -> new Shape(new int[][]{{0, 0}, {0, 1}, {-1, 1}, {0, -1}, {1, -1}});
             default -> null;
         };
     }
