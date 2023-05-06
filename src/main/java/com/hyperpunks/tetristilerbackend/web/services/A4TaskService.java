@@ -52,26 +52,6 @@ public class A4TaskService {
         return requestForm;
     }
 
-
-//    private RequestForm deserializeRequestJSON(JSONObject requestJSON) throws JSONException {
-//        RequestForm requestForm = new RequestForm();
-//        requestForm.gridSizeX = requestJSON.getInt("gridSizeX");
-//        requestForm.gridSizeY = requestJSON.getInt("gridSizeY");
-//        requestForm.letter = requestJSON.getString("letter");
-//
-//        JSONArray blackHolesJSON = requestJSON.getJSONArray("blackHoles");
-//        requestForm.blackHoles = new ArrayList<>();
-//        for (int i = 0; i < blackHolesJSON.length(); i++) {
-//            JSONArray holeJSON = blackHolesJSON.getJSONArray(i);
-//            int x = holeJSON.getInt(0);
-//            int y = holeJSON.getInt(1);
-//            requestForm.blackHoles.add(new int[]{x, y});
-//        }
-//
-//        return requestForm;
-//    }
-
-
     public ResponseEntity<Object> getPositions(String requestJSON) {
         RequestForm requestForm;
         try {
