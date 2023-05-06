@@ -1,6 +1,6 @@
 package com.hyperpunks.tetristilerbackend.web.services;
 
-import com.hyperpunks.tetristilerbackend.libary.Shape;
+import com.hyperpunks.tetristilerbackend.library.Shape;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

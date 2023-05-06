@@ -1,4 +1,4 @@
-package com.hyperpunks.tetristilerbackend.libary;
+package com.hyperpunks.tetristilerbackend.library;
 
 import java.util.ArrayList;
 import java.util.Arrays;
