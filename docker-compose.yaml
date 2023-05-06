@@ -1,0 +1,8 @@
+services:
+  tetris-tiler-back:
+    image: tetris-tiler-back
+    build: ./
+    ports:
+      - 8900:8080
+    restart: unless-stopped
+
