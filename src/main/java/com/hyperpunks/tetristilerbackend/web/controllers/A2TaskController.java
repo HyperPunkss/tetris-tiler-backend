@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/a2-task/")
+@RequestMapping("api/v1/a2-task")
 public class A2TaskController {
 
     private final A2TaskService a2TaskService;
