@@ -47,6 +47,12 @@ public class Grid {
         for (int[] shapeCoordinate : shape.getLocalCoordinates()) {
             int x = shapeCoordinate[0] + positionX;
             int y = shapeCoordinate[1] + positionY;
+            if (x < 0 || grid[0].length <= x) {
+                return false;
+            }
+            if (y < 0 || grid.length <= y) {
+                return false;
+            }
             String tile = grid[y][x];
             if (!tile.equals("E")) {
                 return false;
