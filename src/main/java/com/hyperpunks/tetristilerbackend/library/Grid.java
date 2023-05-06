@@ -117,4 +117,40 @@ public class Grid {
         }
         return count;
     }
+
+    public int calculatePerimeter() {
+        int count = 0;
+        for (int y = 0; y < getSizeY(); y++) {
+            for (int x = 0; x < getSizeX(); x++) {
+                if (grid[y][x].equals("E") || grid[y][x].equals("B")) {
+                    continue;
+                }
+                if (x < getSizeX() - 1 && (grid[y][x + 1].equals("E") || grid[y][x + 1].equals("B"))) {
+                    count++;
+                } else if (x == getSizeX() - 1) {
+                    count++;
+                }
+
+                if (x > 0 && (grid[y][x - 1].equals("E") || grid[y][x - 1].equals("B"))) {
+                    count++;
+                } else if (x == 0) {
+                    count++;
+                }
+
+                if (y < getSizeY() - 1 && (grid[y + 1][x].equals("E") || grid[y + 1][x].equals("B"))) {
+                    count++;
+                } else if (y == getSizeY() - 1) {
+                    count++;
+                }
+
+                if (y > 0 && (grid[y - 1][x].equals("E") || grid[y - 1][x].equals("B"))) {
+                    count++;
+                } else if (y == 0) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
 }
