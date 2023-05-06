@@ -66,4 +66,28 @@ public class Grid {
         }
         return true;
     }
+
+    public int countFilled() {
+        int count = 0;
+        for (String[] row : grid) {
+            for (String tile : row) {
+                if (!tile.equals("E") && !tile.equals("B")) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int countUnfilled() {
+        int count = 0;
+        for (String[] row : grid) {
+            for (String tile : row) {
+                if (tile.equals("E")) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 }
