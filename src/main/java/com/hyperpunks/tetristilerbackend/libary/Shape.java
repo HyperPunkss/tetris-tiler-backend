@@ -171,6 +171,37 @@ public class Shape {
         return lines.toString();
     }
 
+    public String toGridString() {
+        int gridSizeX = 5;
+        int gridSizeY = 5;
+
+        int xAdjustment = (int) ((double) gridSizeX / 2.0);
+        int yAdjustment = (int) ((double) gridSizeY / 2.0);
+
+        int[][] globalCoordinates = new int[this.localCoordinates.length][2];
+        for (int i = 0; i < globalCoordinates.length; i++) {
+            globalCoordinates[i][0] = this.localCoordinates[i][0] + xAdjustment;
+            globalCoordinates[i][1] = this.localCoordinates[i][1] + yAdjustment;
+        }
+
+        StringBuilder gridString = new StringBuilder();
+        int i = 0;
+        for (int y = gridSizeY; 0 <= y; y--) {
+            for (int x = 0; x < gridSizeX; x++) {
+                if (i < globalCoordinates.length && globalCoordinates[i][0] == x && globalCoordinates[i][1] == y) {
+                    gridString.append(name);
+                    i++;
+                } else {
+                    gridString.append('E');
+                }
+            }
+            gridString.append(" ");
+        }
+        gridString.deleteCharAt(gridString.length() - 1);
+
+        return gridString.toString();
+    }
+
     public static List<Shape> getAllShapes() {
         List<Shape> result = new ArrayList<>();
         for (Character shapeLetter : allShapeLetters) {
