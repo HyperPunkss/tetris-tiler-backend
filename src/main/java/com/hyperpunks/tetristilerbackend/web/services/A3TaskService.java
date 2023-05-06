@@ -30,7 +30,7 @@ public class A3TaskService {
         List<VariationResult> variations = new ArrayList<>();
         int i = 1;
         for (Shape variant : shape.generateAllVariants()) {
-            variations.add(new VariationResult(letter + i, variant.toGridString()));
+            variations.add(new VariationResult(variant.getName() + i, variant.toGridString()));
             i++;
         }
         return ResponseEntity.ok(variations);
