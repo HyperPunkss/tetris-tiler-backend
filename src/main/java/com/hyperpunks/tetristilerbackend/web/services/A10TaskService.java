@@ -59,14 +59,16 @@ public class A10TaskService {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Could not parse JSON, error: " + e);
         }
-        Grid grid = new Grid(requestForm.gridSizeX, requestForm.gridSizeY);
+        Grid grid = Grid.withBlacks(requestForm.gridSizeX, requestForm.gridSizeY, requestForm.blackHoles);
         List<Shape> shapes = requestForm.letters.stream().map(Shape::fromString).toList();
         List<Grid> resultGrids = Solver.findAllSolutions(grid,shapes,requestForm.allowRotations, requestForm.allowFlips);
+        List<String> stringGrids = resultGrids.stream().map(Grid::toString).toList();
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
 
-        List<Object> result = new ArrayList<>(resultGrids);
-        result.add(executionTime);
+        List<Object> result = new ArrayList<>();
+        result.addAll(stringGrids);
+        result.add(String.valueOf(executionTime));
         return ResponseEntity.ok(result);
     }
 }
