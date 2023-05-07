@@ -35,7 +35,7 @@ public class Grid {
     public static Grid withBlacks(int gridSizeX, int gridSizeY, List<int[]> blackCoordinates) {
         Grid grid = new Grid(gridSizeX, gridSizeY);
         for (int[] blackCoordinate : blackCoordinates) {
-            grid.set(blackCoordinate[0], blackCoordinate[1], "B");
+            grid.set(blackCoordinate[1], blackCoordinate[0], "B");
         }
         return grid;
     }
