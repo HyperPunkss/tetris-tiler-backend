@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class A10TaskService {
@@ -61,13 +62,11 @@ public class A10TaskService {
         }
         Grid grid = Grid.withBlacks(requestForm.gridSizeX, requestForm.gridSizeY, requestForm.blackHoles);
         List<Shape> shapes = requestForm.letters.stream().map(Shape::fromString).toList();
-        List<Grid> resultGrids = Solver.findAllSolutions(grid,shapes,requestForm.allowRotations, requestForm.allowFlips);
-        List<String> stringGrids = resultGrids.stream().map(Grid::toString).toList();
+        Set<String> resultGrids = Solver.findAllSolutions(grid,shapes,requestForm.allowRotations, requestForm.allowFlips);
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
 
-        List<Object> result = new ArrayList<>();
-        result.addAll(stringGrids);
+        List<Object> result = new ArrayList<>(resultGrids);
         result.add(String.valueOf(executionTime));
         return ResponseEntity.ok(result);
     }

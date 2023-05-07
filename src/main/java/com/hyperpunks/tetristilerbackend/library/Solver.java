@@ -2,11 +2,13 @@ package com.hyperpunks.tetristilerbackend.library;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Solver {
 
-    public static List<Grid> findAllSolutions(Grid startingGrid, List<Shape> shapes, boolean canRotate, boolean canFlip) {
-        List<Grid> solutions = new ArrayList<>();
+    public static Set<String> findAllSolutions(Grid startingGrid, List<Shape> shapes, boolean canRotate, boolean canFlip) {
+        Set<String> solutions = new TreeSet<>();
         if (startingGrid.countUnfilled() % 5 != 0) {
             return solutions;
         }
@@ -39,7 +41,7 @@ public class Solver {
                                 break;
                             }
                             if (nextGrid.countUnfilled() == 0) {
-                                solutions.add(nextGrid);
+                                solutions.add(nextGrid.toString());
                             } else {
                                 nextGridStates.add(nextGrid);
                                 nextGrid = stateGrid.clone();
