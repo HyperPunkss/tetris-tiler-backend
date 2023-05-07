@@ -11,7 +11,7 @@ public class Grid {
 
 
     public Grid(int gridSizeX, int gridSizeY) {
-        grid = new String[gridSizeX][gridSizeY];
+        grid = new String[gridSizeY][gridSizeX];
         for (String[] row : grid) {
             Arrays.fill(row, "E");
         }
