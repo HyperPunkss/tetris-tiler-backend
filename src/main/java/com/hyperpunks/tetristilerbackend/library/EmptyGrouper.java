@@ -1,14 +1,11 @@
 package com.hyperpunks.tetristilerbackend.library;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class EmptyGrouper {
     private final int[][] mappings; // y, x
     private final IDManager idManager = new IDManager();
-    private final Queue<int[]> coordinatesToCheck = new ArrayDeque<>(); // x, y
+    private final Queue<int[]> toChange = new ArrayDeque<>(); // x, y
 
     EmptyGrouper(int gridSizeX, int gridSizeY) {
         mappings = new int[gridSizeY][gridSizeX];
@@ -27,76 +24,126 @@ public class EmptyGrouper {
         for (int y = 0; y < grid.length; y++) {
             for (int x = 0; x < grid[0].length; x++) {
                 if (grid[y][x].equals("E")) {
-                    mappings[y][x] = idManager.generateID();
-                    coordinatesToCheck.add(new int[]{x, y});
+                    emptyTile(x, y);
                 } else {
                     mappings[y][x] = 0;
+                    fillTile(x, y);
                 }
             }
         }
-        checkGroups();
     }
 
-    private void checkGroups() {
-        while (!coordinatesToCheck.isEmpty()) {
-            int[] coordinate = coordinatesToCheck.remove();
+    private void refreshIDs(int startX, int startY) {
+        int idToSet = idManager.generateID();
+        refreshIDs(startX, startY, idToSet);
+        idManager.decrementPopulation(idToSet); // Remove extra one from side effect
+    }
+
+    private void refreshIDs(int startX, int startY, int idToSet) {
+        toChange.add(new int[]{startX, startY});
+        while (!toChange.isEmpty()) {
+            int[] coordinate = toChange.remove();
             int x = coordinate[0];
             int y = coordinate[1];
-            if (mappings[y][x] == 0) {
-                continue;
+            if (mappings[y][x] != 0) {
+                idManager.decrementPopulation(mappings[y][x]);
             }
-            boolean updatedAnything;
-            do {
-                updatedAnything = false;
-                for (int[] neighbour : neighbouringCoordinates(x, y)) {
-                    int neighbourID = mappings[neighbour[1]][neighbour[0]];
-                    if (neighbourID == 0) {
-                        continue;
-                    }
-                    if (neighbourID != mappings[y][x]) {
-                        int maxID = Integer.max(neighbourID, mappings[y][x]);
-                        int minID = Integer.min(neighbourID, mappings[y][x]);
-                        idManager.decrementPopulation(maxID);
-                        idManager.incrementPopulation(minID);
-                        mappings[y][x] = minID;
-                        mappings[neighbour[1]][neighbour[0]] = minID;
-                        coordinatesToCheck.add(neighbour);
-                        updatedAnything = true;
-                    }
+            mappings[y][x] = idToSet;
+            idManager.incrementPopulation(idToSet);
+            for (int[] neighbour : neighbouringCoordinates(x, y)) {
+                int neighbourID = mappings[neighbour[1]][neighbour[0]];
+                if (neighbourID != idToSet && neighbourID != 0) {
+                    toChange.add(neighbour);
                 }
-            } while (updatedAnything);
+            }
+        }
+    }
+
+    private boolean inBoundsX(int x) {
+        return x >= 0 && x < mappings[0].length;
+    }
+
+    private boolean inBoundsY(int y) {
+        return y >= 0 && y < mappings.length;
+    }
+
+    private int borderfulMapping(int x, int y) {
+        if (!inBoundsX(x) || !inBoundsY(y)) {
+            return 0;
+        }
+        return mappings[y][x];
+    }
+
+    public void fillTile(int x, int y) {
+        if (mappings[y][x] == 0) {
+            return;
+        }
+        idManager.decrementPopulation(mappings[y][x]);
+        mappings[y][x] = 0;
+        int[][] neighbours8Ways = new int[][]{{x - 1, y}, {x - 1, y + 1}, {x, y + 1}, {x + 1, y + 1}, {x + 1, y}, {x + 1, y - 1}, {x, y - 1}, {x - 1, y - 1}};
+        int lastID = borderfulMapping(x - 1, y);
+        int transitions = 0;
+        for (int[] neighbour : neighbours8Ways) {
+            int id = borderfulMapping(neighbour[0], neighbour[1]);
+            if (id != lastID) {
+                transitions++;
+                lastID = id;
+            }
+        }
+        if (transitions > 2) {
+            for (int[] neighbour : neighbours8Ways) {
+                if (borderfulMapping(neighbour[0], neighbour[1]) != 0) {
+                    refreshIDs(neighbour[0], neighbour[1]);
+                }
+            }
         }
     }
 
     public void fillTiles(List<int[]> tiles) {
         for (int[] tile : tiles) {
-            if (mappings[tile[1]][tile[0]] != 0) {
-                int old_id = mappings[tile[1]][tile[0]];
-                idManager.decrementPopulation(old_id);
-            }
-            mappings[tile[1]][tile[0]] = 0;
-            for (int[] neighbour : neighbouringCoordinates(tile[0], tile[1])) {
-                if (mappings[neighbour[1]][neighbour[0]] != 0) {
-                    int old_id = mappings[neighbour[1]][neighbour[0]];
-                    idManager.decrementPopulation(old_id);
-                    mappings[neighbour[1]][neighbour[0]] = idManager.generateID();
-                    coordinatesToCheck.add(neighbour);
-                }
-            }
+            fillTile(tile[0], tile[1]);
         }
-        checkGroups();
+    }
+
+    public void emptyTile(int x, int y) {
+        int largestGroupID = 0;
+        int groupSizeNorth = 0;
+        if (borderfulMapping(x, y + 1) != 0) {
+            groupSizeNorth = idManager.getPopulation(borderfulMapping(x, y + 1));
+        }
+        int groupSizeSouth = 0;
+        if (borderfulMapping(x, y - 1) != 0) {
+            groupSizeSouth = idManager.getPopulation(borderfulMapping(x, y - 1));
+        }
+        int groupSizeEast = 0;
+        if (borderfulMapping(x + 1, y) != 0) {
+            groupSizeEast = idManager.getPopulation(borderfulMapping(x + 1, y));
+        }
+        int groupSizeWest = 0;
+        if (borderfulMapping(x - 1, y) != 0) {
+            groupSizeWest = idManager.getPopulation(borderfulMapping(x - 1, y));
+        }
+        // Yes, I'm tired and sleepy, how did you know?
+        if (groupSizeNorth >= groupSizeSouth && groupSizeNorth >= groupSizeEast && groupSizeNorth >= groupSizeWest) {
+            largestGroupID = borderfulMapping(x, y + 1);
+        } else if (groupSizeSouth >= groupSizeNorth && groupSizeSouth >= groupSizeEast && groupSizeSouth >= groupSizeWest) {
+            largestGroupID = borderfulMapping(x, y - 1);
+        } else if (groupSizeEast >= groupSizeNorth && groupSizeEast >= groupSizeSouth && groupSizeEast >= groupSizeWest) {
+            largestGroupID = borderfulMapping(x + 1, y);
+        } else {
+            largestGroupID = borderfulMapping(x - 1, y);
+        }
+        if (largestGroupID != 0) {
+            refreshIDs(x, y, largestGroupID);
+        } else {
+            refreshIDs(x, y);
+        }
     }
 
     public void emptyTiles(List<int[]> tiles) {
         for (int[] tile : tiles) {
-            if (mappings[tile[1]][tile[0]] != 0) {
-                int old_id = mappings[tile[1]][tile[0]];
-                idManager.decrementPopulation(old_id);
-            }
-            mappings[tile[1]][tile[0]] = idManager.generateID();
-            coordinatesToCheck.add(tile);
+            emptyTile(tile[0], tile[1]);
         }
-        checkGroups();
     }
 
     public List<Integer> getAllGroupSizes() {

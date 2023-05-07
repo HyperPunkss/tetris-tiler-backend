@@ -79,9 +79,9 @@ public class Grid {
     public void set(int x, int y, String value) {
         grid[y][x] = value;
         if (value.equals("E")) {
-            emptyGrouper.emptyTiles(List.of(new int[]{x, y}));
+            emptyGrouper.emptyTile(x, y);
         } else {
-            emptyGrouper.fillTiles(List.of(new int[]{x, y}));
+            emptyGrouper.fillTile(x, y);
         }
     }
 
@@ -141,14 +141,12 @@ public class Grid {
         if (!canFit(positionX, positionY, shape)) {
             return false;
         }
-        List<int[]> updatedCoordinates = new ArrayList<>(5);
         for (int[] shapeCoordinate : shape.getLocalCoordinates()) {
             int x = shapeCoordinate[0] + positionX;
             int y = shapeCoordinate[1] + positionY;
             grid[y][x] = shape.getName();
-            updatedCoordinates.add(new int[]{x, y});
+            emptyGrouper.fillTile(x, y);
         }
-        emptyGrouper.fillTiles(updatedCoordinates);
         return true;
     }
 
@@ -200,28 +198,39 @@ public class Grid {
         return placements;
     }
 
-    public boolean placeBottomLeftmost(Shape shape) {
-        List<int[]> availablePlacements = findAllPlacements(shape);
-        if (availablePlacements.size() == 0) {
-            return false;
+    public Grid tryPlacing2(Shape shape1, Shape shape2) {
+        List<Shape> shape1Variants = shape1.generateAllVariants();
+        List<Shape> shape2Variants = shape2.generateAllVariants();
+        for (Shape shape1Variant : shape1Variants) {
+            for (int[] shape1Placements : findAllPlacements(shape1Variant)) {
+                Grid shape1Grid = clone();
+                boolean placed = shape1Grid.place(shape1Placements[0], shape1Placements[1], shape1);
+                if (!placed) {
+                    continue;
+                }
+                if (1 < shape1Grid.getAllEmptyGroupsSizes().size()) {
+                    continue;
+                }
+                for (Shape shape2Variant : shape2Variants) {
+                    for (int[] shape2Placements : shape1Grid.findAllTouchingPlacements(shape2Variant)) {
+                        Grid shape2Grid = shape1Grid.clone();
+                        placed = shape2Grid.place(shape2Placements[0], shape2Placements[1], shape2Variant);
+                        if (!placed) {
+                            continue;
+                        }
+                        if (shape2Grid.getAllEmptyGroupsSizes().size() == 1) {
+                            return shape2Grid;
+                        }
+                    }
+                }
+            }
         }
-        int[] firstPosition = availablePlacements.get(0);
-        return place(firstPosition[0], firstPosition[1], shape);
+        return null;
     }
 
-    public boolean placeTouching(Shape shape) {
-        List<int[]> availablePlacements = findAllTouchingPlacements(shape);
-        if (availablePlacements.size() == 0) {
-            return false;
-        }
-        int[] firstPosition = availablePlacements.get(0);
-        return place(firstPosition[0], firstPosition[1], shape);
+    public List<Integer> getAllEmptyGroupsSizes() {
+        return emptyGrouper.getAllGroupSizes();
     }
-
-    public String getEmptiness() {
-        return emptyGrouper.getAllGroupSizes().toString();
-    }
-
 
     public int calculatePerimeter() {
         int count = 0;
