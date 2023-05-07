@@ -6,10 +6,10 @@ import java.util.List;
 public class Solver {
 
     public static List<Grid> findAllSolutions(Grid startingGrid, List<Shape> shapes, boolean canRotate, boolean canFlip) {
-        if ((startingGrid.getSizeX() * startingGrid.getSizeY()) % 5 != 0) {
-            return null;
-        }
         List<Grid> solutions = new ArrayList<>();
+        if ((startingGrid.getSizeX() * startingGrid.getSizeY()) % 5 != 0) {
+            return solutions;
+        }
         List<List<Shape>> allShapesAndVariants = shapes.stream().map(shape -> shape.generateAllVariants(canRotate, canFlip)).toList();
         List<Grid> gridStates = new ArrayList<>();
         gridStates.add(startingGrid);
