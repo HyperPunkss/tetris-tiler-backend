@@ -7,7 +7,7 @@ public class Solver {
 
     public static List<Grid> findAllSolutions(Grid startingGrid, List<Shape> shapes, boolean canRotate, boolean canFlip) {
         List<Grid> solutions = new ArrayList<>();
-        if ((startingGrid.getSizeX() * startingGrid.getSizeY()) % 5 != 0) {
+        if (startingGrid.countUnfilled() % 5 != 0) {
             return solutions;
         }
         List<List<Shape>> allShapesAndVariants = shapes.stream().map(shape -> shape.generateAllVariants(canRotate, canFlip)).toList();
